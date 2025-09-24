@@ -1,8 +1,15 @@
+#Indian Army Terrier Cyber Quest 2025 – CTF Write-Up
+
 <img width="975" height="534" alt="image" src="https://github.com/user-attachments/assets/40160c9e-1980-4eff-bf5a-eb86ab933b44" />
 
-Machine link 
-Vmware   https://ctfptf.s3.ap-south-1.amazonaws.com/CTF-VMware+(1).ova
-Virtual box  https://ctfptf.s3.ap-south-1.amazonaws.com/CTF_VB.ova
+# Challenge Overview
+ web exploitation, network Forensics, steganography, privilege escalation, binary analysis, etc...
+
+# Machine link 
+'''bash
+Vmware   -->  https://ctfptf.s3.ap-south-1.amazonaws.com/CTF-VMware+(1).ova
+Virtual box -->  https://ctfptf.s3.ap-south-1.amazonaws.com/CTF_VB.ova
+'''
 
 Open the machine in NAT or bridge adapter 
 
