@@ -1,4 +1,4 @@
-<img width="975" height="381" alt="image" src="https://github.com/user-attachments/assets/5f5036eb-8399-46d7-a87a-232355b74501" /><img width="975" height="534" alt="image" src="https://github.com/user-attachments/assets/40160c9e-1980-4eff-bf5a-eb86ab933b44" />
+<img width="975" height="534" alt="image" src="https://github.com/user-attachments/assets/40160c9e-1980-4eff-bf5a-eb86ab933b44" />
 Machine link 
 Vmware   https://ctfptf.s3.ap-south-1.amazonaws.com/CTF-VMware+(1).ova
 Virtual box  https://ctfptf.s3.ap-south-1.amazonaws.com/CTF_VB.ova
